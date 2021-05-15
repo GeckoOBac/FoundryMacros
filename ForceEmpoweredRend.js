@@ -3,6 +3,7 @@ const ATKR_NAME = "Rusty";
 const ATT_NAME = "int";
 const ATK_NAME = "Force-empowered Rend";
 const DMG_DIE = "1d8";
+const DMG_TYPE = "Force";
 
 // Initialisation variables
 let actor_data = game.user.character.data.data;
@@ -13,7 +14,8 @@ let char_data = {prof: actor_data.attributes.prof, attMod: actor_data.abilities[
 let attackRollOptions = {
    rollMode: "roll",
    fastForward: true,
-//  advantageSettings: [{}],
+   advantage: event.shiftKey,
+   disadvantage: event.ctrlKey,   
    parts: ["@prof", "@attMod"],
    data: char_data,
    chatMessage: false
@@ -54,28 +56,19 @@ game.dnd5e.dice.d20Roll(attackRollOptions ).then(attack_roll => {
          <div class="dice-result">
             <div class="dice-formula">${attack_roll.formula}</div>
             <div class="dice-tooltip" style="display: none;">
-               <section class="tooltip-part">
-                  <div class="dice">
-                     <header class="part-header flexrow">
-                        <span class="part-formula">${attack_roll.dice[0].formula}</span>
-                        <span class="part-total">${attack_roll.results[0]}</span>
-                     </header>
-                     <ol class="dice-rolls">
-                         <li class="roll die d20 ${attack_class}">${attack_roll.results[0]}</li>
-                     </ol>
-                  </div>
-               </section>
+               ${iterateDice(attack_roll)}
             </div>
             <h4 class="dice-total ${attack_class}"> ${attack_roll.total}</h4>
          </div>
-      </div><br/>
+      </div>
+      Damage
       <div class="dice-roll">
          <div class="dice-result">
             <div class="dice-formula">${damage_roll.formula}</div>
             <div class="dice-tooltip" style="display: none;">
                ${iterateDice(damage_roll)}
             </div>
-            <h4 class="dice-total"> ${damage_roll.total}</h4>
+            <h4 class="dice-total"> ${damage_roll.total} (${DMG_TYPE})</h4>
          </div>
       </div>`;
       
@@ -107,7 +100,7 @@ function iterateDice(roll) {
      // Iterate on the dice results for this die type
       let die_roll;
       for(die_roll of die.results) {
-         result += `<li class="roll die d${die.faces}">${die_roll.result}</li>`;
+         result += `<li class="roll die d${die.faces} ${die_roll.result == 1 ? "min" : (die_roll.result == die.faces ? "max" : "")}">${die_roll.result}</li>`;
       }
      
       // Close the section of the tooltip
