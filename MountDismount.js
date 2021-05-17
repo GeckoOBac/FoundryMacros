@@ -21,7 +21,11 @@ if(rider_token.getFlag(MODULE_NAME, FLAG_NAME)) {
    // First, let's try to see if the rider is in range
    let ruler = new Ruler();
    ruler.waypoints[0] = rider_token.center;
-   let distance = ruler.measure(mount_token.center)[0].distance;
+   // Preset for 0 distance, as ruler will be undefined if the tokens overlap
+   let distance = 0;
+   if(ruler.measure(mount_token.center)[0]) {
+     distance = ruler.measure(mount_token.center)[0].distance;
+   }
    if(distance <= 5) {
       // Then we attempt to mount up properly
       MountUp.mount(rider_token.id, mount_token.id);
@@ -30,4 +34,6 @@ if(rider_token.getFlag(MODULE_NAME, FLAG_NAME)) {
       mount_token.control();
       rider_token.release();
    } else ui.notifications.warn("You must be in a square adjacent to your ride to attempt to mount up.");
+
+   ruler.clear();
 }
