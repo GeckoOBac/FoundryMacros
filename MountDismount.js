@@ -30,10 +30,14 @@ if(rider_token.getFlag(MODULE_NAME, FLAG_NAME)) {
       // Then we attempt to mount up properly
       MountUp.mount(rider_token.id, mount_token.id);
 
-      // Placing control on the mount for ease of movement
+      // Taken control of both tokens to account for rider vision
       mount_token.control();
-      rider_token.release();
+      rider_token.control({releaseOthers: false});
    } else ui.notifications.warn("You must be in a square adjacent to your ride to attempt to mount up.");
 
+   // Finally placing the character token zIndex to be higher than the mount.
+   rider_token.zIndex = mount_token.zIndex + 1;
+   
+   // Cleaning up the ruler
    ruler.clear();
 }
