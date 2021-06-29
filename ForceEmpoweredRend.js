@@ -21,13 +21,16 @@ let attackRollOptions = {
    chatMessage: false
 };
 
-game.dnd5e.dice.d20Roll(attackRollOptions ).then(attack_roll => {
-// Attack roll results for crit/fumble
+game.dnd5e.dice.d20Roll(attackRollOptions).then(attack_roll => {
+	// Attack roll results for crit/fumble
    let attack_class = "";
    let attack_crit = false;
    let attack_fumble = false;
    
-   switch(attack_roll.results[0]) {
+   // Change the API, now dice hold all the single dice rolls
+   // while total tells you which was the end result, 
+   // eventually discarding dice in case of adv/disadv
+   switch(attack_roll.dice[0].total) {
       case 1:
          attack_fumble = true;
          attack_class = "min fumble";
